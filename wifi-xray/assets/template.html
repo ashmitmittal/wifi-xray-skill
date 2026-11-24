@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__TITLE__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+:root{--bg:#01050a;--glass:linear-gradient(180deg,rgba(9,26,38,.66),rgba(3,12,20,.58));--line:rgba(79,236,255,.16);--line2:rgba(79,236,255,.3);--ink:#e4fbff;--mute:#86a3b0;--dim:#4c6773;--c5:#3ee6ff;--c2:#b090ff;--na:#9fd7e6;--warn:#ffb547;--bad:#ff4d5e;--good:#3df5a0;--info:#8fb3ff;--score:var(--good);--fh:"Chakra Petch",system-ui,sans-serif;--fm:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--ink);font:13.5px/1.4 var(--fh);overflow:hidden;-webkit-font-smoothing:antialiased}
+body{display:grid;grid-template-columns:300px minmax(0,1fr) 340px;grid-template-rows:54px minmax(0,1fr) 232px}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(120,240,255,.018) 0 1px,transparent 1px 3px),radial-gradient(ellipse 80% 70% at 50% 45%,transparent 55%,rgba(0,0,0,.55));z-index:40}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.warn{color:var(--warn)!important}.bad{color:var(--bad)!important}.good{color:var(--good)!important}.info{color:var(--info)!important}
+#stage{position:fixed;inset:0;z-index:0}
+#stage canvas{display:block}
+.labels{position:absolute!important;inset:0;pointer-events:none}
+
+header{grid-column:1/-1;display:flex;align-items:center;gap:28px;padding:0 18px;position:relative;z-index:3;background:linear-gradient(180deg,rgba(2,10,16,.9),rgba(2,10,16,.55));border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.brand{display:flex;align-items:center;gap:10px;font:700 15px var(--fh);letter-spacing:.28em;white-space:nowrap;text-shadow:0 0 12px rgba(62,230,255,.5)}
+.brand i{width:12px;height:12px;border:1.5px solid var(--c5);transform:rotate(45deg);box-shadow:0 0 10px var(--c5),inset 0 0 6px var(--c5)}
+.brand span{font:400 11px var(--fm);letter-spacing:.06em;color:var(--dim);text-shadow:none}
+.hstats{display:flex;gap:26px;margin:0 auto}
+.hstats div{display:flex;flex-direction:column;gap:1px}
+.hstats small{font:600 9.5px var(--fh);letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.hstats b{font:500 13px var(--fm);white-space:nowrap}
+#h-sc{color:var(--score)}
+.hctl{display:flex;gap:8px}
+.ghost{border:1px solid var(--line2);font:600 10.5px var(--fh);letter-spacing:.2em;text-transform:uppercase;padding:7px 14px;color:var(--ink);text-decoration:none;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);background:rgba(62,230,255,.04);transition:background .2s,color .2s}
+.ghost:hover{background:rgba(62,230,255,.12)}.ghost.on{color:var(--c5);background:rgba(62,230,255,.14)}
+
+aside{position:relative;z-index:2;padding:14px;display:flex;flex-direction:column;gap:12px;overflow:auto;scrollbar-width:none}
+#p-dev,#p-diag{flex:0 1 auto;min-height:230px;display:flex;flex-direction:column}
+#p-router{flex:0 1 auto;min-height:170px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+#p-self{flex:none}
+aside.l{grid-row:2/4}
+aside.r{grid-column:3;grid-row:2/4}
+.panel{position:relative;background:var(--glass);border:1px solid var(--line);padding:13px 14px;backdrop-filter:blur(14px) saturate(140%);box-shadow:0 10px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(160,250,255,.06);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
+.panel::before{content:"";position:absolute;top:0;left:0;width:38px;height:2px;background:var(--c5);box-shadow:0 0 10px var(--c5)}
+.panel::after{content:"";position:absolute;right:0;bottom:0;width:38px;height:2px;background:var(--c5);opacity:.5}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:11px}
+.ph>span{font:600 11.5px var(--fh);letter-spacing:.26em;text-transform:uppercase;color:var(--c5);text-shadow:0 0 10px rgba(62,230,255,.45);white-space:nowrap}
+.ph em{font:400 10.5px var(--fm);font-style:normal;color:var(--dim);white-space:nowrap}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;font-size:12.5px;margin-top:10px}
+.kv dt{color:var(--mute)}
+.kv dd{font:400 11.5px/1.5 var(--fm);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ic{width:100%;height:100%}
+.b2g{--bc:var(--c2)}.b5g,.b6g{--bc:var(--c5)}.bna,.bwired{--bc:var(--na)}
+
+.dsum{font-size:11.5px;color:var(--mute);margin:-3px 0 9px}
+.dl{list-style:none;display:flex;flex-direction:column;gap:3px;flex:0 1 auto;min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.dl li{flex:none}
+.dl li{display:flex;align-items:center;gap:9px;padding:6px 7px 5px;border:1px solid transparent;border-left:2px solid var(--bc);background:rgba(62,230,255,.025);cursor:pointer;transition:background .15s}
+.dl li:hover{background:rgba(62,230,255,.07)}
+.dl li.sel{border-color:var(--line2);border-left-color:var(--bc);background:rgba(62,230,255,.11)}
+.dl li.off{--bc:var(--dim)}
+.dl li.off .tx,.dl li.off .ic{opacity:.55}
+.dl .ic{width:19px;height:19px;flex:none;color:var(--bc)}
+.dl .tx{min-width:0;flex:1}
+.dl b{display:block;font:600 12.5px/1.25 var(--fh);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dl small{display:block;font:400 10px var(--fm);color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dl .sep{cursor:default;background:none;border:0;padding:8px 2px 2px;font:600 9px var(--fh);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.dl .sep:hover{background:none}
+.kn{flex:none;width:22px;height:22px;border:1px solid var(--line2);font:500 11px/1 var(--fm);color:transparent;transition:color .15s,border-color .15s,background .15s}
+.kn:hover{color:var(--mute)}
+.known .kn{border-color:var(--good);color:var(--good);background:rgba(61,245,160,.1)}
+.you{flex:none;font:600 9px var(--fh);letter-spacing:.2em;text-transform:uppercase;color:var(--c5);border:1px solid var(--line2);padding:3px 6px 2px}
+.dnote{font:400 10.5px/1.45 var(--fm);color:var(--dim);margin-top:9px}
+
+.rmodel{display:flex;gap:11px;align-items:center}
+.rmodel .ic{width:34px;height:34px;color:var(--c5);flex:none;filter:drop-shadow(0 0 8px rgba(62,230,255,.7))}
+.rmodel b{display:block;font:600 16px var(--fh);letter-spacing:.03em}
+.rmodel small{font:400 10.5px var(--fm);color:var(--dim)}
+.band{margin-top:11px;border-top:1px solid var(--line);padding-top:10px}
+.bt{display:flex;align-items:center;gap:7px;font:600 12.5px var(--fh);letter-spacing:.14em;text-transform:uppercase}
+.bt .dot{width:7px;height:7px;transform:rotate(45deg);background:var(--bc);box-shadow:0 0 8px var(--bc)}
+.bt em{margin-left:auto;font:400 10px var(--fm);font-style:normal;color:var(--dim);letter-spacing:0;text-transform:none}
+.bg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:8px 0 6px}
+.bg div{border:1px solid var(--line);background:rgba(62,230,255,.03);padding:5px 6px 4px}
+.bg small{display:block;font:600 8.5px var(--fh);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.bg b{font:500 17px var(--fm)}
+.bg b i{font-style:normal;font-size:9px;color:var(--dim);margin-left:2px}
+.bs{font:400 10.5px var(--fm);color:var(--mute)}
+
+.sig{display:flex;align-items:flex-end;gap:12px}
+.bars{display:flex;align-items:flex-end;gap:3px;height:30px}
+.bars i{width:6px;background:rgba(62,230,255,.12)}
+.bars i:nth-child(1){height:25%}.bars i:nth-child(2){height:50%}.bars i:nth-child(3){height:75%}.bars i:nth-child(4){height:100%}
+.bars i.on{background:var(--c5);box-shadow:0 0 8px var(--c5)}
+.sv b{font:500 32px/1 var(--fm);letter-spacing:-.02em;text-shadow:0 0 14px rgba(62,230,255,.35)}
+.sv i{font:400 12px var(--fm);font-style:normal;color:var(--mute);margin-left:4px}
+.sl{margin-left:auto;text-align:right;font:600 9.5px/1.5 var(--fh);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.meter{margin-top:12px}
+.mh{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-bottom:5px}
+.mh b{font:400 11.5px var(--fm);color:var(--ink)}
+.track{position:relative;height:6px;background:rgba(62,230,255,.06);border:1px solid var(--line)}
+.track+.track{margin-top:4px}
+.fill{position:absolute;left:0;top:0;bottom:0;width:calc(min(var(--v),1)*100%);background:linear-gradient(90deg,rgba(62,230,255,.2),var(--c5));box-shadow:0 0 12px rgba(62,230,255,.6);transform-origin:left;transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
+.pre .fill{transform:scaleX(0)}
+.fill.idle{background:linear-gradient(90deg,rgba(61,245,160,.2),var(--good));box-shadow:0 0 10px rgba(61,245,160,.5)}
+.fill.busy{background:linear-gradient(90deg,rgba(255,181,71,.2),var(--lagc,var(--warn)));box-shadow:0 0 10px color-mix(in srgb,var(--lagc,var(--warn)) 55%,transparent)}
+.mark{position:absolute;top:-4px;bottom:-4px;left:calc(var(--v)*100%);width:1px;background:var(--mute)}
+.mark u{position:absolute;top:13px;right:4px;text-decoration:none;font:400 9px var(--fm);color:var(--dim);white-space:nowrap}
+.mark+.mark u{right:auto;left:4px}
+.snr{margin-bottom:22px}
+.spd{display:grid;grid-template-columns:1fr 1fr;gap:10px;border-top:1px solid var(--line);padding-top:11px}
+.spd small{display:block;font:600 9.5px var(--fh);letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.spd b{font:500 28px/1.1 var(--fm);letter-spacing:-.02em;text-shadow:0 0 14px rgba(62,230,255,.3)}
+.spd i{font:400 11px var(--fm);font-style:normal;color:var(--mute);margin-left:4px}
+.lk{margin-top:11px}
+.skipd{border-top:1px solid var(--line);padding-top:10px;font:400 11px var(--fm);color:var(--dim)}
+
+.score{display:flex;gap:13px;align-items:center}
+.ring{position:relative;width:92px;height:92px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .st{fill:none;stroke:rgba(62,230,255,.1);stroke-width:6}
+.ring .rv{fill:none;stroke:var(--score);stroke-width:6;stroke-dasharray:var(--v) 100;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--score) 80%,transparent));transition:stroke-dasharray 1.6s cubic-bezier(.2,.8,.2,1)}
+.pre .ring .rv{stroke-dasharray:0 100}
+.sn{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sn b{font:500 30px/1 var(--fm);color:var(--score);text-shadow:0 0 14px color-mix(in srgb,var(--score) 50%,transparent)}
+.sn small{font:600 8.5px var(--fh);letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-top:3px}
+.headline{font:500 15px/1.34 var(--fh)}
+.finds{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:5px;flex:0 1 auto;min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.finds li{flex:none}
+.finds li{--sc:var(--info);border:1px solid var(--line);border-left:2px solid var(--sc);background:rgba(62,230,255,.025)}
+.finds li.s-high{--sc:var(--bad)}.finds li.s-med{--sc:var(--warn)}.finds li.s-good{--sc:var(--good)}
+.fh{width:100%;display:flex;align-items:center;gap:8px;padding:8px 9px;text-align:left}
+.sd{width:6px;height:6px;transform:rotate(45deg);background:var(--sc);box-shadow:0 0 8px var(--sc);flex:none}
+.ft{font:600 13px var(--fh);letter-spacing:.02em;flex:1}
+.tag{font:400 9.5px var(--fm);color:var(--dim);border:1px solid var(--line2);padding:1px 6px;white-space:nowrap}
+.fd,.fx{display:none;padding:0 10px 8px 23px;font-size:12px;line-height:1.45;color:var(--mute)}
+.fx{color:var(--ink);font:500 11.5px/1.5 var(--fm)}
+.fx::before{content:"DO  ";color:var(--sc);letter-spacing:.1em}
+.open .fd,.open .fx{display:block}
+.ronly{margin-top:10px;font:400 10px/1.5 var(--fm);color:var(--dim);text-align:center;border-top:1px solid var(--line);padding-top:9px}
+
+#map{grid-column:2;grid-row:2;position:relative;pointer-events:none}
+.hud{position:absolute;z-index:2;pointer-events:none;text-shadow:0 0 3px #01050a,0 0 8px #01050a,0 0 14px #01050a}
+.hud.tl{top:14px;left:16px;max-width:262px;padding:9px 12px 10px;background:linear-gradient(180deg,rgba(2,10,16,.66),rgba(2,10,16,.4));border-left:2px solid var(--line2);backdrop-filter:blur(6px)}
+.ht{font:600 11px var(--fh);letter-spacing:.26em;text-transform:uppercase;color:var(--c5);text-shadow:0 0 10px rgba(62,230,255,.45)}
+.hud p{font-size:11.5px;color:var(--mute);margin:3px 0 8px}
+.lg{list-style:none;display:flex;flex-direction:column;gap:4px;font:400 10.5px var(--fm);color:var(--mute)}
+.lg li{display:flex;align-items:center;gap:7px}
+.lg i{width:9px;height:9px;transform:rotate(45deg);border:1.5px solid var(--k);flex:none}
+.lg i.f{background:var(--k);box-shadow:0 0 6px var(--k)}
+.hud.tr{top:14px;right:16px;display:flex;flex-direction:column;gap:10px;align-items:flex-end;text-align:right}
+.ans{padding:8px 12px 9px;background:linear-gradient(180deg,rgba(2,10,16,.66),rgba(2,10,16,.4));border-right:2px solid var(--line2);backdrop-filter:blur(6px)}
+.ans small{display:block;font:600 9.5px var(--fh);letter-spacing:.24em;text-transform:uppercase;color:var(--c5);text-shadow:0 0 10px rgba(62,230,255,.45)}
+.ans b{display:block;font:500 34px/1.05 var(--fm);margin:2px 0 1px;text-shadow:0 0 14px rgba(62,230,255,.35)}
+.ans b.word{font:700 27px/1.25 var(--fh);letter-spacing:.14em;margin-right:-.14em;opacity:0;transition:opacity .6s}
+.ans b.word.on{opacity:1}
+.ans span{display:block;font:400 10.5px/1.45 var(--fm);color:var(--mute)}
+.lv-none,.lv-low{color:var(--good)}.lv-medium{color:var(--warn)}.lv-high{color:var(--bad)}.lv-na{color:var(--mute)}
+.hint{position:absolute;right:18px;bottom:12px;font:400 10.5px var(--fm);color:var(--dim);letter-spacing:.06em}
+.nogl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:340px;text-align:center;font:400 12px/1.5 var(--fm);color:var(--mute);border:1px solid var(--line2);background:rgba(2,10,16,.85);padding:14px 16px}
+
+.card{position:absolute;left:16px;bottom:14px;width:272px;z-index:4;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .25s,transform .25s}
+.card.on{opacity:1;transform:none;pointer-events:auto}
+.dch{display:flex;gap:10px;align-items:center}
+.dch .ic{width:30px;height:30px;color:var(--c5);flex:none;filter:drop-shadow(0 0 6px rgba(62,230,255,.6))}
+.dch div{min-width:0}
+.dch b{display:block;font:600 16px var(--fh);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dch small{font:400 10.5px var(--fm);color:var(--dim)}
+.dch .x{margin-left:auto;align-self:flex-start;font-size:18px;color:var(--mute);line-height:1}
+.verdict{margin-top:10px;font:500 12.5px var(--fh);letter-spacing:.03em;padding:7px 9px;border:1px solid currentColor;background:rgba(255,255,255,.02)}
+
+.specp{grid-column:2;grid-row:3;margin:0 14px 14px;display:flex;flex-direction:column;z-index:2}
+.specp .ph{margin-bottom:4px}
+.tabs{display:flex;gap:4px;margin-right:auto;margin-left:14px}
+.tabs button{border:1px solid var(--line2);padding:3px 11px;font:600 10px var(--fh);letter-spacing:.18em;color:var(--mute)}
+.tabs button.on{border-color:var(--c5);color:var(--c5);background:rgba(62,230,255,.1)}
+.specp .lg{flex-direction:row;gap:14px}
+#spec{flex:1;min-height:0;position:relative}
+#spec svg{position:absolute;inset:0}
+.sp-grid{stroke:rgba(79,236,255,.09);stroke-dasharray:2 4}
+.sp-base,.sp-tick{stroke:rgba(79,236,255,.25)}
+.sp-yl{font:400 9.5px var(--fm);fill:var(--dim);text-anchor:end}
+.sp-xl{font:400 9.5px var(--fm);fill:var(--mute);text-anchor:middle}
+.sp-dfs{fill:rgba(79,236,255,.025)}
+.sp-dfsl{font:400 8.5px var(--fm);letter-spacing:.12em;fill:var(--dim);text-anchor:middle}
+.sp-net{fill:rgba(110,140,160,.06);stroke:rgba(110,140,160,.5);stroke-width:1.1;transform-box:fill-box;transform-origin:50% 100%;animation:grow .9s cubic-bezier(.2,.9,.2,1) both;animation-delay:calc(var(--i)*55ms)}
+.sp-net.hit{fill:rgba(255,77,94,.03);stroke:rgba(255,120,132,.45)}
+.sp-net.hit.audible{fill:rgba(255,181,71,.07);stroke:rgba(255,181,71,.9);filter:drop-shadow(0 0 3px rgba(255,181,71,.5))}
+.sp-net.hit.strong{fill:rgba(255,77,94,.1);stroke:rgba(255,77,94,.95);filter:drop-shadow(0 0 3px rgba(255,77,94,.6))}
+.sp-mine{fill:color-mix(in srgb,var(--bc) 18%,transparent);stroke:var(--bc);stroke-width:2.2;filter:drop-shadow(0 0 7px var(--bc));transform-box:fill-box;transform-origin:50% 100%;animation:grow 1s cubic-bezier(.2,.9,.2,1) both;animation-delay:calc(var(--i)*55ms)}
+.sp-best{fill:none;stroke:var(--good);stroke-width:1.3;stroke-dasharray:5 4}
+.sp-me{font:600 11px var(--fh);letter-spacing:.16em;fill:var(--bc);text-anchor:middle}
+.sp-bl{font:600 11px var(--fh);letter-spacing:.16em;fill:var(--good);text-anchor:middle}
+.sp-mel{stroke:var(--bc);stroke-dasharray:2 3;opacity:.6}
+.sp-bll{stroke:var(--good);stroke-dasharray:2 3;opacity:.6}
+.sp-cnt{font:500 11px var(--fm);fill:var(--mute);text-anchor:middle}
+.sp-none{font:400 11px var(--fm);fill:var(--dim);text-anchor:middle}
+@keyframes grow{from{transform:scaleY(0)}}
+
+.lw{width:0;height:0}
+.lb{position:absolute;left:11px;bottom:6px;padding:2px 7px 2px 6px;border-left:2px solid var(--bc);background:linear-gradient(90deg,rgba(3,16,26,.82),rgba(3,16,26,.2));white-space:nowrap;pointer-events:auto;cursor:pointer;opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.lb.t-warn{--bc:var(--warn)}
+.lb.on{opacity:1;transform:none}
+.lb.dim{opacity:.22}
+.lb b{display:block;font:600 11.5px/1.2 var(--fh);letter-spacing:.03em;color:var(--ink);text-shadow:0 0 8px rgba(62,230,255,.35)}
+.lb>span{font:400 9.5px var(--fm);color:var(--mute)}
+.lb .w{color:var(--warn)}
+.nlb{font:500 10px var(--fm);color:#7d93a6;white-space:nowrap;opacity:0;transition:opacity .5s}
+.nlb.strong{color:#ff8994;text-shadow:0 0 6px rgba(255,77,94,.6)}
+.nlb.audible{color:#ffcf8a;text-shadow:0 0 6px rgba(255,181,71,.5)}
+.nlb.faint{color:#b98a92}
+.nlb.on{opacity:1}
+.glb span{display:block;font:400 9.5px var(--fm);letter-spacing:.04em;text-align:center;opacity:.85;margin-top:1px}
+.glb{white-space:nowrap;font:600 11.5px var(--fh);letter-spacing:.2em;--gc:var(--bad);color:var(--gc);border:1px solid color-mix(in srgb,var(--gc) 55%,transparent);padding:4px 10px 3px;background:rgba(20,6,10,.55);text-shadow:0 0 8px color-mix(in srgb,var(--gc) 70%,transparent);box-shadow:0 0 18px color-mix(in srgb,var(--gc) 20%,transparent);opacity:0;transition:opacity .6s}
+.glb.g-medium{--gc:var(--warn)}.glb.g-low{--gc:#c9a2a8}
+.glb.on{opacity:1}
+.rlb{font:400 9.5px var(--fm);color:rgba(110,200,220,.55);white-space:nowrap}
+.clb{text-align:center;white-space:nowrap;opacity:0;transition:opacity .6s}
+.clb.on{opacity:1}
+.clb b{display:block;font:700 12.5px var(--fh);letter-spacing:.32em;color:var(--ink);text-shadow:0 0 10px rgba(62,230,255,.8)}
+.clb span{font:400 10px var(--fm);color:var(--mute)}
+
+.pre aside .panel,.pre .specp,.pre .hud{opacity:0;transform:translateY(12px)}
+aside .panel,.specp,.hud{transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+aside.l .panel:nth-child(2){transition-delay:.12s}
+aside.r .panel:nth-child(1){transition-delay:.25s}
+aside.r .panel:nth-child(2){transition-delay:.4s}
+.specp{transition-delay:.55s}
+.skip *,.skip *::before,.skip *::after{transition:none!important}
+.skip .sp-net,.skip .sp-mine{animation:none}
+
+.boot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.98);width:min(470px,86%);padding:18px 20px 16px;border:1px solid var(--line2);background:rgba(2,10,16,.88);backdrop-filter:blur(8px);z-index:10;opacity:0;transition:opacity .35s,transform .35s;font:400 12.5px var(--fm);box-shadow:0 0 40px rgba(62,230,255,.12)}
+.boot.on{opacity:1;transform:translate(-50%,-50%)}
+.boot.out{opacity:0;transform:translate(-50%,-50%) scale(1.03)}
+.bh{font:700 14px var(--fh);letter-spacing:.32em;margin-bottom:12px;color:var(--c5);text-shadow:0 0 10px rgba(62,230,255,.6)}
+.bh span{font:400 10.5px var(--fm);letter-spacing:.06em;color:var(--dim);margin-left:8px;text-shadow:none}
+.bl{display:flex;gap:8px;align-items:baseline;padding:3px 0;opacity:0;transform:translateX(-6px);transition:opacity .25s,transform .25s}
+.bl.on{opacity:1;transform:none}
+.bl span{color:var(--mute);white-space:nowrap}
+.bl span::before{content:"› ";color:var(--c5)}
+.bl i{flex:1;border-bottom:1px dotted var(--line2);transform:translateY(-3px)}
+.bl b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.bp{height:2px;background:var(--line);margin-top:12px;overflow:hidden}
+.bp span{display:block;height:100%;background:var(--c5);box-shadow:0 0 8px var(--c5);transform-origin:left;animation:bp 2.2s linear both}
+@keyframes bp{from{transform:scaleX(0)}}
+</style>
+</head>
+<body class="pre">
+<div id="stage"></div>
+<header>
+  <div class="brand"><i></i>WIFI X-RAY<span>// network scan</span></div>
+  <div class="hstats">
+    <div><small>Network</small><b id="h-ssid"></b></div>
+    <div><small>Devices</small><b id="h-dev">0</b></div>
+    <div><small>Neighbours</small><b id="h-nb">0</b></div>
+    <div><small>Health</small><b id="h-sc"></b></div>
+    <div><small>Scanned</small><b id="h-ts"></b></div>
+  </div>
+  <div class="hctl">
+    <button class="ghost" id="priv" title="Hide names and addresses (P)">Privacy</button>
+    <button class="ghost" id="replay">Replay</button>
+  </div>
+</header>
+<aside class="l">
+  <section class="panel" id="p-dev"></section>
+  <section class="panel" id="p-router"></section>
+</aside>
+<main id="map">
+  <div class="hud tl">
+    <div class="ht">Network hologram</div>
+    <p id="lg-rule"></p>
+    <ul class="lg" id="lg-map"></ul>
+  </div>
+  <div class="hud tr">
+    <div class="ans"><small>On your Wi-Fi</small><b id="c-dev">0</b><span id="a-dev"></span></div>
+    <div class="ans"><small>Neighbour interference</small><b class="word" id="c-int"></b><span id="a-int"></span></div>
+  </div>
+  <div class="hud hint">drag to orbit · scroll to zoom · click a device</div>
+  <div class="nogl" id="nogl" hidden>The 3D view could not load. It needs an internet connection for three.js and a browser with WebGL. Everything else on this page still works.</div>
+  <section class="panel card" id="card"></section>
+</main>
+<section class="panel specp">
+  <div class="ph">
+    <span>Channel spectrum</span>
+    <div class="tabs"><button data-b="2g">2.4 GHz</button><button data-b="5g">5 GHz</button></div>
+    <ul class="lg">
+      <li><i class="f" style="--k:var(--c2)" id="lg-me"></i>Your Wi-Fi</li>
+      <li><i style="--k:var(--bad)"></i>Overlaps you</li>
+      <li><i style="--k:#6e8ca0"></i>No overlap</li>
+      <li><i style="--k:var(--good);border-style:dashed"></i>Better spot</li>
+    </ul>
+  </div>
+  <div id="spec"></div>
+</section>
+<aside class="r">
+  <section class="panel" id="p-diag"></section>
+  <section class="panel" id="p-self"></section>
+</aside>
+
+<script>window.NET = __DATA__;</script>
+<script>
+(function () {
+  const N = window.NET;
+  const q = new URLSearchParams(location.search);
+  const SKIP = q.has("skip");
+  if (SKIP) document.documentElement.classList.add("skip");
+  const state = { privacy: q.has("privacy"), started: false, gl: false };
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const minus = v => String(v).replace("-", "−");
+
+  const ICON = {
+    laptop: "M5 5h14v10H5z M2.5 19h19 M9 17h6",
+    phone: "M8 2.5h8a1 1 0 0 1 1 1v17a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-17a1 1 0 0 1 1-1z M11 18.5h2",
+    tv: "M3 5h18v11H3z M8 20h8 M12 16v4",
+    speaker: "M12 7a7 3 0 1 0 .01 0 M5 10v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5 M12 9h.01",
+    bulb: "M9.5 18h5 M10.5 21h3 M12 3a6 6 0 0 0-3.8 10.6c.7.7 1.1 1.4 1.3 2.4h5c.2-1 .6-1.7 1.3-2.4A6 6 0 0 0 12 3z",
+    printer: "M7 9V3.5h10V9 M7 17H4.5v-6.5A1.5 1.5 0 0 1 6 9h12a1.5 1.5 0 0 1 1.5 1.5V17H17 M7 14h10v6.5H7z",
+    tablet: "M5.5 2.5h13a1 1 0 0 1 1 1v17a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1v-17a1 1 0 0 1 1-1z M11 18.5h2",
+    console: "M7 8h10a5 5 0 0 1 5 5v1a3 3 0 0 1-5.6 1.5L15.8 14H8.2l-.6 1.5A3 3 0 0 1 2 14v-1a5 5 0 0 1 5-5z M7 11v3 M5.5 12.500h3 M16.5 12.500h.01",
+    camera: "M3 7.5h3l1.500-2.500h9L18 7.5h3v11H3z M12 10a3.500 3.500 0 1 0 .01 0",
+    unknown: "M12 2.5a9.5 9.5 0 1 0 .01 0 M9.6 9.2a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6 M12 17h.01",
+    router: "M3 13.5h18v6H3z M7 16.5h.01 M10.5 16.5h.01 M8.5 10a5 5 0 0 1 7 0 M5.5 7a9.5 9.5 0 0 1 13 0"
+  };
+  const KIND = { laptop: "Computer", phone: "Phone", tv: "TV", speaker: "Speaker", bulb: "Smart device", printer: "Printer", tablet: "Tablet", console: "Console", camera: "Camera", unknown: "Device" };
+  const BL = { "2g": "2.4 GHz", "5g": "5 GHz", "6g": "6 GHz", wired: "Cable" };
+  const LEVEL = { none: "NONE", low: "LOW", medium: "MEDIUM", high: "HIGH" };
+  const icon = k => `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${ICON[k] || ICON.unknown}"/></svg>`;
+
+  const SELF = N.meta.self, self = SELF.charAt(0).toLowerCase() + SELF.slice(1);
+  N.devices.forEach((d, i) => { d.masked = d.me ? SELF : `${KIND[d.kind] || "Device"} ${String(i + 1).padStart(2, "0")}`; });
+  N.neighbors.forEach((n, i) => { n.masked = `Network ${String(i + 1).padStart(2, "0")}`; });
+  const pv = (real, masked) => `<span data-real="${esc(real)}" data-masked="${esc(masked)}">${esc(state.privacy ? masked : real)}</span>`;
+  const pvt = (real, masked) => `<tspan data-real="${esc(real)}" data-masked="${esc(masked)}">${esc(state.privacy ? masked : real)}</tspan>`;
+  const ssid = () => N.ssid ? pv(N.ssid, "HOME-••••") : "name hidden";
+  const ssidT = () => N.ssid ? pvt(N.ssid, "HOME-••••") : "YOUR WI-FI";
+  const maskMac = m => "••:••:••:••:" + m.slice(-5);
+  const maskIp = ip => ip.split(".").slice(0, 2).join(".") + ".•••.•••";
+
+  function setPrivacy(on) {
+    state.privacy = on;
+    $$("[data-real]").forEach(el => { el.textContent = on ? el.dataset.masked : el.dataset.real; });
+    $("#priv").classList.toggle("on", on);
+  }
+
+  const KEY = "wifi-xray-known";
+  let known = {};
+  try { known = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { known = {}; }
+  const kid = d => d.mac || d.ip;
+  const isKnown = d => d.me || !!known[kid(d)];
+  const setKnown = (d, v) => {
+    if (v) known[kid(d)] = 1; else delete known[kid(d)];
+    try { localStorage.setItem(KEY, JSON.stringify(known)); } catch (e) {}
+  };
+
+  const chF = (band, c) => band === "2g" ? 2407 + 5 * c : 5000 + 5 * c;
+  function centerCh(band, ch, w) {
+    if (band === "2g") return w >= 40 ? (ch <= 7 ? ch + 2 : ch - 2) : ch;
+    if (w <= 20) return ch;
+    const base = ch >= 149 ? 149 : ch >= 100 ? 100 : 36, step = w >= 160 ? 32 : w >= 80 ? 16 : 8;
+    return base + Math.floor((ch - base) / step) * step + (w >= 160 ? 14 : w >= 80 ? 6 : 2);
+  }
+  function span(band, ch, w) {
+    const f = chF(band, centerCh(band, ch, w));
+    const half = (band === "2g" && w <= 20 ? 22 : w) / 2;
+    return [f - half, f + half];
+  }
+  const mine = id => N.router.bands.find(b => b.id === id) || null;
+  const hits = id => N.neighbors.filter(n => n.band === id && n.hit).length;
+  const online = N.devices.filter(d => d.online);
+  const offline = N.devices.filter(d => !d.online);
+
+  function verdict(d) {
+    if (!d.online) return ["info", "The router remembers this device. It is not connected right now."];
+    if (d.signal != null) {
+      if (d.signal >= -60) return ["good", "Strong signal."];
+      if (d.signal >= -70) return ["good", "Good signal."];
+      if (d.signal >= -78) return ["warn", ["bulb", "speaker", "printer"].includes(d.kind) ? `Weak, but fine for a ${KIND[d.kind].toLowerCase()}.` : "Weak signal. Video may buffer here."];
+      return ["bad", "Very weak signal. Expect drops."];
+    }
+    if (d.rate) return d.rate >= 300 ? ["good", "Fast link to the router."] : d.rate >= 80 ? ["good", "Good link to the router."] : ["warn", "Slow link. It is probably far from the router."];
+    if (d.band === "wired") return ["good", "Connected by cable."];
+    return ["info", "Found by the scan. Its name, band and speed need the router login."];
+  }
+  const tone = d => (d.signal != null ? d.signal < -75 : d.rate ? d.rate < 80 : false) ? "warn" : "ok";
+
+  function devMeta(d) {
+    if (!d.online) return "not connected now";
+    const p = [];
+    if (d.band) p.push(BL[d.band] || d.band);
+    if (d.rate) p.push(`${d.rate} Mbps`);
+    else if (d.signal != null) p.push(`${minus(d.signal)} dBm`);
+    if (!p.length) p.push(d.ip || "address not known");
+    return p.join(" · ");
+  }
+  const devRow = d => `<li class="${d.online ? "on" : "off"} b${d.band || "na"}${isKnown(d) ? " known" : ""}" data-id="${d.id}">${icon(d.kind)}<div class="tx"><b>${pv(d.label, d.masked)}</b><small>${esc(devMeta(d))}</small></div>${d.me ? `<span class="you">you</span>` : `<button class="kn" title="I know this device" aria-label="I know this device">✓</button>`}</li>`;
+
+  function devicesPanel() {
+    return `<div class="ph"><span>On your Wi-Fi</span><em>${online.length} online</em></div>
+      <p class="dsum" id="d-sum"></p>
+      <ul class="dl">${online.map(devRow).join("")}${offline.length ? `<li class="sep">${offline.length} seen earlier · not connected now</li>${offline.map(devRow).join("")}` : ""}</ul>
+      ${N.meta.routerLogin ? "" : `<p class="dnote">Found by scanning from ${esc(self)}. Sleeping phones can be missed, and names need the router login.</p>`}`;
+  }
+  function devSummary() {
+    const left = N.devices.filter(d => !isKnown(d)).length;
+    $("#d-sum").innerHTML = left ? `Tick the ones you know. <b class="warn">${left}</b> not ticked yet.` : `<b class="good">All ticked.</b> You know every device here.`;
+  }
+
+  function routerPanel() {
+    const r = N.router;
+    const band = b => {
+      const it = N.interference[b.id], h = hits(b.id), n = online.filter(d => d.band === b.id).length;
+      const lv = it ? it.level : "na";
+      return `<div class="band b${b.id}">
+        <div class="bt"><span class="dot"></span>${BL[b.id]}<em>${esc(b.standard || "")}</em></div>
+        <div class="bg">
+          <div><small>Channel</small><b>${b.channel}</b></div>
+          <div><small>Width</small><b class="${b.id === "2g" && b.width > 20 ? "warn" : ""}">${b.width}<i>MHz</i></b></div>
+          <div><small>Devices</small><b>${online.some(d => !d.me && d.band) ? n : "–"}</b></div>
+          <div><small>Overlap</small><b class="lv-${lv}">${h}</b></div>
+        </div>
+        <div class="bs">${esc([b.security, b.auto ? "channel on Auto" : b.inferred ? "channel read from the air" : null].filter(Boolean).join(" · "))}</div>
+      </div>`;
+    };
+    const sub = [r.hardware, r.firmware ? `firmware ${String(r.firmware).split(" ")[0]}` : null].filter(Boolean).join(" · ");
+    const rows = [
+      ["Network", ssid()],
+      r.wanIp ? ["Public IP", pv(r.wanIp, maskIp(r.wanIp)) + (r.cgnat ? " · shared" : "")] : null,
+      r.qos ? ["QoS", `<span class="${/off|disabled/i.test(r.qos) ? "warn" : "good"}">${esc(r.qos)}</span>`] : null,
+      r.uptime ? ["Uptime", esc(r.uptime)] : null
+    ].filter(Boolean);
+    return `<div class="ph"><span>Router</span><em>${esc(r.lanIp || "")}</em></div>
+      <div class="rmodel">${icon("router")}<div><b>${esc(r.name)}</b><small>${esc(sub || (N.meta.routerLogin ? "" : "log in to the router for model and settings"))}</small></div></div>
+      <dl class="kv">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+      ${r.bands.map(band).join("")}`;
+  }
+
+  function selfPanel() {
+    const l = N.link, s = N.speed;
+    const snr = l.noise != null ? l.signal - l.noise : null;
+    const bars = l.signal >= -55 ? 4 : l.signal >= -65 ? 3 : l.signal >= -75 ? 2 : 1;
+    const word = ["", "weak", "fair", "good", "strong"][bars];
+    const std = [l.phy, l.mcs != null ? `MCS ${l.mcs}` : null, l.streams ? `${l.streams}×${l.streams}` : null].filter(Boolean).join(" · ");
+    let o = `<div class="ph"><span>${esc(SELF)}</span><em>${BL[l.band] || ""} · CH ${l.channel}</em></div>
+      <div class="sig">
+        <div class="bars">${[1, 2, 3, 4].map(i => `<i class="${i <= bars ? "on" : ""}"></i>`).join("")}</div>
+        <div class="sv"><b class="num" data-to="${l.signal}">${l.signal}</b><i>dBm</i></div>
+        <div class="sl">signal<br><span class="${bars >= 3 ? "good" : bars === 2 ? "warn" : "bad"}">${word}</span></div>
+      </div>`;
+    if (snr != null) o += `<div class="meter snr">
+        <div class="mh"><span>Signal-to-noise</span><b>${snr} dB</b></div>
+        <div class="track"><span class="fill" style="--v:${Math.min(snr / 45, 1)}"></span><span class="mark" style="--v:${20 / 45}"><u>data 20</u></span><span class="mark" style="--v:${25 / 45}"><u>calls 25</u></span></div>
+      </div>`;
+    if (!s) return o + `<div class="skipd">Speed test was skipped in this scan.</div>`;
+    const lagc = s.lag === "heavy" ? "var(--bad)" : s.lag === "some" ? "var(--warn)" : "var(--good)";
+    o += `<div class="spd">
+        <div><small>Download</small><b class="num" data-to="${s.down}" data-dec="1">${s.down}</b><i>Mbps</i></div>
+        <div><small>Upload</small><b class="num" data-to="${s.up}" data-dec="1">${s.up}</b><i>Mbps</i></div>
+      </div>`;
+    if (s.plan) o += `<div class="meter">
+        <div class="mh"><span>Download vs plan</span><b>${Math.round(s.down / s.plan * 100)}% of ${s.plan} Mbps</b></div>
+        <div class="track"><span class="fill" style="--v:${s.down / s.plan}"></span></div>
+      </div>`;
+    if (s.idle != null && s.loaded != null) o += `<div class="meter" style="--lagc:${lagc}">
+        <div class="mh"><span>Ping</span><b><span class="good">${s.idle} ms</span> idle → <span style="color:${lagc}">${s.loaded} ms</span> busy</b></div>
+        <div class="track"><span class="fill idle" style="--v:${s.idle / 250}"></span></div>
+        <div class="track"><span class="fill busy" style="--v:${s.loaded / 250}"></span></div>
+      </div>`;
+    return o + `<p class="bs lk">Link ${l.rate} Mbps${std ? ` · ${esc(std)}` : ""}</p>`;
+  }
+
+  function diagPanel() {
+    return `<div class="ph"><span>Diagnosis</span><em>${N.findings.length} findings</em></div>
+      <div class="score">
+        <div class="ring"><svg viewBox="0 0 120 120"><circle class="st" cx="60" cy="60" r="52" pathLength="100"/><circle class="rv" cx="60" cy="60" r="52" pathLength="100" style="--v:${N.score}"/></svg><div class="sn"><b class="num" data-to="${N.score}">${N.score}</b><small>health</small></div></div>
+        <p class="headline">${esc(N.headline)}</p>
+      </div>
+      <ol class="finds">${N.findings.map((f, i) => `<li class="s-${f.sev}${i === 0 ? " open" : ""}">
+        <button class="fh"><span class="sd"></span><span class="ft">${esc(f.title)}</span><span class="tag">${esc(f.tag)}</span></button>
+        <p class="fd">${esc(f.detail)}</p>
+        ${f.fix ? `<p class="fx">${esc(f.fix)}</p>` : ""}
+      </li>`).join("")}</ol>
+      <p class="ronly">Read-only scan. Nothing on your router was changed.</p>`;
+  }
+
+  function deviceCard(d) {
+    const [cls, txt] = verdict(d);
+    const maker = d.vendor || (d.private ? "Private address" : "Maker not known");
+    const rows = [
+      ["Status", d.online ? "Online" : "Not connected now"],
+      d.band ? ["Band", `${BL[d.band] || d.band}${mine(d.band) ? ` · CH ${mine(d.band).channel}` : ""}`] : null,
+      d.online && d.signal != null ? ["Signal", `${minus(d.signal)} dBm`] : null,
+      d.online && d.rate ? ["Link rate", `${d.rate} Mbps`] : null,
+      d.ip ? ["IP", esc(d.ip)] : null,
+      d.mac ? ["MAC", pv(d.mac, maskMac(d.mac)) + (d.private ? " · private" : "")] : null,
+      d.since ? ["Connected", esc(d.since)] : null
+    ].filter(Boolean);
+    return `<div class="dch">${icon(d.kind)}<div><b>${pv(d.label, d.masked)}</b><small>${esc(maker)} · ${KIND[d.kind] || "Device"}</small></div><button class="x" aria-label="Close">×</button></div>
+      <dl class="kv">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+      <p class="verdict ${cls}">${esc(txt)}</p>`;
+  }
+
+  function spectrum(band, W = 1000, H = 196) {
+    const L = 38, R = 14, T = 30, B = 24;
+    const is2 = band === "2g";
+    const f0 = is2 ? 2397 : 5160, f1 = is2 ? 2489 : 5845;
+    const X = f => L + (f - f0) / (f1 - f0) * (W - L - R);
+    const s0 = -95, s1 = -45;
+    const Y = s => T + (s1 - Math.max(s0, Math.min(s1, s))) / (s1 - s0) * (H - T - B);
+    const base = Y(s0);
+    const hump = (a, b, s) => {
+      const x0 = X(a), x1 = X(b), w = x1 - x0, y = Y(s);
+      return `M${x0.toFixed(1)},${base} C${(x0 + w * .1).toFixed(1)},${y.toFixed(1)} ${(x0 + w * .18).toFixed(1)},${y.toFixed(1)} ${(x0 + w * .3).toFixed(1)},${y.toFixed(1)} L${(x1 - w * .3).toFixed(1)},${y.toFixed(1)} C${(x1 - w * .18).toFixed(1)},${y.toFixed(1)} ${(x1 - w * .1).toFixed(1)},${y.toFixed(1)} ${x1.toFixed(1)},${base}Z`;
+    };
+    let o = "";
+    if (!is2) [[5250, 5350], [5470, 5725]].forEach(([a, b]) => {
+      o += `<rect class="sp-dfs" x="${X(a)}" y="${T - 6}" width="${X(b) - X(a)}" height="${base - T + 6}"/><text class="sp-dfsl" x="${(X(a) + X(b)) / 2}" y="${T + 6}">DFS · RADAR CHECK</text>`;
+    });
+    for (let s = -90; s <= -50; s += 10) o += `<line class="sp-grid" x1="${L}" x2="${W - R}" y1="${Y(s)}" y2="${Y(s)}"/><text class="sp-yl" x="${L - 6}" y="${Y(s) + 3.5}">${s}</text>`;
+    o += `<line class="sp-base" x1="${L}" x2="${W - R}" y1="${base}" y2="${base}"/>`;
+    const chans = is2 ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] : [36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 149, 153, 157, 161, 165];
+    chans.forEach(c => { const x = X(chF(band, c)); o += `<line class="sp-tick" x1="${x}" x2="${x}" y1="${base}" y2="${base + 4}"/><text class="sp-xl" x="${x}" y="${base + 16}">${c}</text>`; });
+    const nets = N.neighbors.filter(n => n.band === band).sort((a, b) => a.signal - b.signal);
+    nets.forEach((n, i) => {
+      const [a, b] = span(band, n.channel, n.width);
+      const nm = n.name ? pvt(n.name, n.masked) + " · " : "";
+      o += `<path class="sp-net${n.hit ? ` hit ${n.level}` : ""}" style="--i:${i}" d="${hump(a, b, n.signal)}"><title>${nm}CH ${n.channel} · ${n.width} MHz · ${n.signal} dBm</title></path>`;
+    });
+    const groups = {};
+    nets.forEach(n => { (groups[n.channel] = groups[n.channel] || []).push(n); });
+    Object.entries(groups).forEach(([c, g]) => {
+      if (g.length < 2) return;
+      const top = Math.max(...g.map(n => n.signal));
+      o += `<text class="sp-cnt" x="${X(chF(band, +c))}" y="${Y(top) + 14}">×${g.length}</text>`;
+    });
+    const m = mine(band);
+    if (!m) {
+      o += `<text class="sp-none" x="${(L + W - R) / 2}" y="${T - 13}">${nets.length ? `Your ${BL[band]} network was not found. ${nets.length} nearby networks shown.` : `Nothing found on ${BL[band]}.`}</text>`;
+      return `<svg class="spec" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${o}</svg>`;
+    }
+    const best = N.best[band];
+    const [ma, mb] = span(band, m.channel, m.width);
+    const mx = (X(ma) + X(mb)) / 2;
+    const meTxt = `${N.ssid || "YOUR WI-FI"} · CH ${m.channel} · ${m.width} MHz`;
+    const wm = meTxt.length * 7.6;
+    const fit = (x, w) => Math.max(L + w / 2, Math.min(W - R - w / 2, x));
+    let xm = fit(mx, wm);
+    if (best && best.change) {
+      const [ba, bb] = span(band, best.channel, best.width);
+      const bx = (X(ba) + X(bb)) / 2;
+      const bTxt = `BETTER → CH ${best.channel} · ${best.width} MHz`;
+      const wb = bTxt.length * 7.6;
+      let xb = fit(bx, wb);
+      const need = (wm + wb) / 2 + 14;
+      if (Math.abs(xm - xb) < need) {
+        const mid = (xm + xb) / 2, dir = bx >= mx ? 1 : -1;
+        xm = fit(mid - dir * need / 2, wm); xb = fit(mid + dir * need / 2, wb);
+        if (Math.abs(xm - xb) < need) { if (dir > 0) xb = fit(xm + need, wb); else xb = fit(xm - need, wb); }
+        if (Math.abs(xm - xb) < need) { if (dir > 0) xm = fit(xb - need, wm); else xm = fit(xb + need, wm); }
+      }
+      o += `<path class="sp-best" d="${hump(ba, bb, m.seen)}"/>`;
+      o += `<line class="sp-bll" x1="${bx}" x2="${bx}" y1="${T - 9}" y2="${Y(m.seen)}"/><text class="sp-bl" x="${xb}" y="${T - 13}">${bTxt}</text>`;
+    }
+    o += `<path class="sp-mine" style="--i:${nets.length}" d="${hump(ma, mb, m.seen)}"/>`;
+    o += `<line class="sp-mel" x1="${mx}" x2="${mx}" y1="${T - 9}" y2="${Y(m.seen)}"/><text class="sp-me" x="${xm}" y="${T - 13}">${ssidT()} · CH ${m.channel} · ${m.width} MHz</text>`;
+    return `<svg class="spec" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${o}</svg>`;
+  }
+
+  function countUp(root = document, dur = 1400) {
+    $$(".num", root).forEach(el => {
+      const to = parseFloat(el.dataset.to), dec = +(el.dataset.dec || 0);
+      if (SKIP) { el.textContent = to.toFixed(dec); return; }
+      el.textContent = (0).toFixed(dec);
+      const t0 = performance.now();
+      const step = t => {
+        const k = Math.min((t - t0) / dur, 1), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = (to * e).toFixed(dec);
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  function boot(host, done) {
+    if (SKIP) { done(); return; }
+    const l = N.link, s = N.speed;
+    const lines = [
+      ["Reading Wi-Fi link", `${BL[l.band] || ""} · CH ${l.channel} · ${minus(l.signal)} dBm`],
+      ["Finding devices", `${online.length} online`],
+      ["Listening for neighbours", `${N.neighbors.length} networks`],
+      ["Reading router", N.meta.routerLogin ? N.router.name : "login skipped"],
+      ["Speed test", s ? `${s.down} Mbps ↓  ${s.up} ↑` : "skipped"],
+      ["Diagnosis", `${N.findings.length} findings`]
+    ];
+    const el = document.createElement("div");
+    el.className = "boot";
+    el.innerHTML = `<div class="bh">WIFI X-RAY <span>v${esc(N.meta.version)} · network scan</span></div>` + lines.map(([a, b]) => `<div class="bl"><span>${a}</span><i></i><b>${esc(b)}</b></div>`).join("") + `<div class="bp"><span></span></div>`;
+    host.appendChild(el);
+    const rows = $$(".bl", el);
+    rows.forEach((r, i) => setTimeout(() => r.classList.add("on"), 180 + i * 300));
+    setTimeout(() => el.classList.add("on"), 20);
+    setTimeout(() => { el.classList.add("out"); done(); }, 180 + rows.length * 300 + 350);
+    setTimeout(() => el.remove(), 180 + rows.length * 300 + 1100);
+  }
+
+  const scoreCol = N.score >= 80 ? "var(--good)" : N.score >= 60 ? "var(--warn)" : "var(--bad)";
+  document.documentElement.style.setProperty("--score", scoreCol);
+  $("#h-ssid").innerHTML = ssid();
+  $("#h-sc").textContent = N.score + "/100";
+  $("#h-ts").textContent = N.meta.scannedAt;
+  $("#p-dev").innerHTML = devicesPanel();
+  $("#p-router").innerHTML = routerPanel();
+  $("#p-diag").innerHTML = diagPanel();
+  $("#p-self").innerHTML = selfPanel();
+  devSummary();
+  $$(".finds .fh").forEach(b => b.addEventListener("click", () => b.parentElement.classList.toggle("open")));
+
+  const measured = online.filter(d => !d.me);
+  $("#lg-rule").textContent = !measured.length ? "Your router and everything around it"
+    : measured.every(d => d.signal != null) ? "Closer to the core = stronger signal"
+    : measured.some(d => d.rate) ? "Closer to the core = faster link"
+    : `Only ${self} is placed by signal`;
+  const lg = [];
+  if (online.some(d => d.band === "5g" || d.band === "6g")) lg.push(["var(--c5)", "5 GHz · upper layer"]);
+  if (online.some(d => d.band === "2g")) lg.push(["var(--c2)", "2.4 GHz · lower layer"]);
+  if (online.some(d => !d.band || d.band === "wired")) lg.push(["var(--na)", N.meta.routerLogin ? "Cable or band not known" : "Band not known"]);
+  if (N.neighbors.some(n => n.hit && n.level === "strong")) lg.push(["var(--bad)", "Red = loud, on your channel"]);
+  if (N.neighbors.some(n => n.hit && n.level === "audible")) lg.push(["var(--warn)", "Amber = quieter, on your channel"]);
+  if (N.neighbors.some(n => n.hit && n.level === "faint")) lg.push(["#b98a92", "Faint = far away, on your channel"]);
+  if (N.neighbors.some(n => !n.hit)) lg.push(["#6e8ca0", "Grey = on another channel"]);
+  $("#lg-map").innerHTML = lg.map(([k, t]) => `<li><i class="f" style="--k:${k}"></i>${t}</li>`).join("");
+
+  const it = N.interference, ov = it.overall;
+  const hitAll = N.neighbors.filter(n => n.hit), strongest = hitAll.length ? Math.max(...hitAll.map(n => n.signal)) : null;
+  $("#c-int").textContent = ov ? LEVEL[ov] : "N/A";
+  $("#c-int").classList.add("lv-" + (ov || "na"));
+  $("#a-int").innerHTML = !N.neighbors.length ? "no other networks in range"
+    : `${hitAll.length} of ${N.neighbors.length} networks overlap you${strongest != null ? `<br>strongest ${minus(strongest)} dBm` : ""}`;
+  $("#a-dev").innerHTML = `devices online${offline.length ? `<br>${offline.length} more seen earlier` : N.meta.routerLogin ? "" : "<br>names need the router login"}`;
+
+  const paint = (dev, nb) => { $("#c-dev").textContent = $("#h-dev").textContent = dev; $("#h-nb").textContent = nb; };
+  const showInt = () => $("#c-int").classList.add("on");
+
+  let band = N.link.band === "2g" ? "2g" : "5g";
+  if (it["2g"] && (!it["5g"] || ["none", "low", "medium", "high"].indexOf(it["2g"].level) > ["none", "low", "medium", "high"].indexOf(it["5g"].level))) band = "2g";
+  const spec = $("#spec");
+  const drawSpec = () => {
+    spec.className = "b" + band;
+    $("#lg-me").style.setProperty("--k", band === "2g" ? "var(--c2)" : "var(--c5)");
+    $$(".tabs button").forEach(x => x.classList.toggle("on", x.dataset.b === band));
+    spec.innerHTML = spectrum(band, Math.max(300, spec.clientWidth), Math.max(120, spec.clientHeight));
+  };
+  $$(".tabs button").forEach(b => b.addEventListener("click", () => { band = b.dataset.b; drawSpec(); }));
+  let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(drawSpec, 120); });
+
+  const WX = window.WX = { N, SKIP, state, $, $$, esc, minus, pv, tone, BL, online, paint, showInt, focus3d: null };
+  const showCard = id => {
+    const d = N.devices.find(x => x.id === id);
+    $$(".dl li").forEach(li => li.classList.toggle("sel", li.dataset.id === id));
+    const c = $("#card");
+    c.innerHTML = deviceCard(d);
+    c.classList.add("on");
+    $(".x", c).addEventListener("click", () => WX.clear());
+  };
+  WX.select = id => { showCard(id); if (WX.focus3d) WX.focus3d(id); };
+  WX.clear = () => { $$(".dl li").forEach(li => li.classList.remove("sel")); $("#card").classList.remove("on"); if (WX.focus3d) WX.focus3d(null); };
+  $$(".dl li[data-id]").forEach(li => {
+    const d = N.devices.find(x => x.id === li.dataset.id);
+    li.addEventListener("click", () => WX.select(d.id));
+    const k = $(".kn", li);
+    if (k) k.addEventListener("click", e => { e.stopPropagation(); setKnown(d, !isKnown(d)); li.classList.toggle("known", isKnown(d)); devSummary(); });
+  });
+
+  $("#priv").addEventListener("click", () => setPrivacy(!state.privacy));
+  if (state.privacy) $("#priv").classList.add("on");
+  $("#replay").addEventListener("click", () => { location.href = location.pathname + (state.privacy ? "?privacy" : ""); });
+  addEventListener("keydown", e => { if (e.key === "Escape") WX.clear(); if (e.key === "p" || e.key === "P") setPrivacy(!state.privacy); });
+
+  const cbs = [];
+  WX.whenStarted = f => { if (state.started) f(); else cbs.push(f); };
+  boot($("#map"), () => {
+    document.body.classList.remove("pre");
+    state.started = true;
+    drawSpec();
+    const fl = $(".finds");
+    if (fl.scrollHeight > fl.clientHeight + 2) $$("li", fl).forEach(li => li.classList.remove("open"));
+    countUp(document);
+    cbs.forEach(f => f());
+    setTimeout(() => { if (!state.gl) { paint(online.length, N.neighbors.length); showInt(); $("#nogl").hidden = false; } }, SKIP ? 2500 : 5000);
+  });
+})();
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+
+const W = window.WX, N = W.N, $ = W.$;
+const RAD = Math.PI / 180;
+const R = s => 2 + (-40 - Math.max(-92, Math.min(-40, s))) / 50 * 9;
+const DOME = R(-90);
+const at = (r, a, y = 0) => new THREE.Vector3(r * Math.cos(a * RAD), y, r * Math.sin(a * RAD));
+const spread = (n, a0, a1) => n === 1 ? [(a0 + a1) / 2] : Array.from({ length: n }, (_, i) => a0 + (a1 - a0) * i / (n - 1));
+const clamp = v => Math.max(0, Math.min(1, v));
+const easeIO = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const easeO = k => 1 - Math.pow(1 - k, 3);
+const back = k => { const c = 2.2; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+
+const stage = $("#stage");
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+const lr = new CSS2DRenderer();
+lr.domElement.className = "labels";
+stage.appendChild(lr.domElement);
+W.state.gl = true;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x01050a);
+scene.fog = new THREE.FogExp2(0x01050a, 0.018);
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 300);
+const HOME = new THREE.Vector3(0, 22.5, 41.5), TARGET = new THREE.Vector3(0, .6, -1.6), START = new THREE.Vector3(0.01, 44, 0.6);
+camera.position.copy(W.SKIP ? HOME : START);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.copy(TARGET);
+Object.assign(controls, { enableDamping: true, dampingFactor: .06, enablePan: false, minDistance: 9, maxDistance: 46, maxPolarAngle: 1.42, autoRotateSpeed: .5, enabled: false });
+
+const C = { c5: new THREE.Color("#3ee6ff"), c2: new THREE.Color("#b090ff"), na: new THREE.Color("#9fd7e6"), warn: new THREE.Color("#ffb547"), bad: new THREE.Color("#ff4d5e"), faint: new THREE.Color("#a8606a"), grey: new THREE.Color("#6e8ca0"), grid: new THREE.Color("#0f4555") };
+const devCol = d => W.tone(d) === "warn" ? C.warn : d.band === "2g" ? C.c2 : d.band === "5g" || d.band === "6g" ? C.c5 : C.na;
+const add = (o, ...k) => { o.add(...k); return k[0]; };
+const basic = (color, o = {}) => new THREE.MeshBasicMaterial({ color, transparent: true, depthWrite: false, ...o });
+
+function tex(draw, size = 256) {
+  const c = document.createElement("canvas"); c.width = c.height = size;
+  draw(c.getContext("2d"), size);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const GLOW = tex((g, s) => { const r = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2); r.addColorStop(0, "rgba(255,255,255,1)"); r.addColorStop(.22, "rgba(255,255,255,.5)"); r.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = r; g.fillRect(0, 0, s, s); }, 128);
+const FLOOR = tex((g, s) => { const r = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2); r.addColorStop(0, "rgba(62,230,255,.16)"); r.addColorStop(.3, "rgba(62,230,255,.035)"); r.addColorStop(.93, "rgba(62,230,255,.015)"); r.addColorStop(.985, "rgba(62,230,255,.12)"); r.addColorStop(1, "rgba(62,230,255,0)"); g.fillStyle = r; g.fillRect(0, 0, s, s); }, 512);
+const SWEEP = tex((g, s) => {
+  const h = s / 2, cg = g.createConicGradient(0, h, h);
+  cg.addColorStop(0, "rgba(62,230,255,.28)"); cg.addColorStop(.1, "rgba(62,230,255,.05)"); cg.addColorStop(.22, "rgba(62,230,255,0)"); cg.addColorStop(1, "rgba(62,230,255,0)");
+  g.fillStyle = cg; g.beginPath(); g.arc(h, h, h, 0, Math.PI * 2); g.fill();
+  g.strokeStyle = "rgba(160,250,255,.9)"; g.lineWidth = 2; g.beginPath(); g.moveTo(h, h); g.lineTo(s, h); g.stroke();
+}, 512);
+
+const DOME_V = `varying vec3 vN; varying vec3 vV; varying float vY;
+void main(){ vec4 wp = modelMatrix * vec4(position,1.0); vY = position.y; vN = normalize(mat3(modelMatrix) * normal); vV = normalize(cameraPosition - wp.xyz); gl_Position = projectionMatrix * viewMatrix * wp; }`;
+const DOME_F = `uniform vec3 uC; uniform float uO; uniform float uT; uniform float uH; uniform float uS;
+varying vec3 vN; varying vec3 vV; varying float vY;
+void main(){
+  float fr = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 2.4);
+  float h = clamp(vY / uH, 0.0, 1.0);
+  float scan = uS * smoothstep(0.03, 0.0, abs(h - fract(uT * 0.2)));
+  float lat = smoothstep(0.93, 1.0, abs(sin(h * 3.14159 * 8.0))) * 0.35;
+  float a = (fr * 0.55 + scan * 0.45 + lat * fr * 0.6) * uO * (1.0 - h * 0.35);
+  gl_FragColor = vec4(uC * (1.0 + scan * 1.2), a);
+}`;
+const domeMat = (color, o, scan = 0) => new THREE.ShaderMaterial({ uniforms: { uC: { value: color.clone() }, uO: { value: 0 }, uT: { value: 0 }, uH: { value: 1 }, uS: { value: scan } }, vertexShader: DOME_V, fragmentShader: DOME_F, transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, userData: { o } });
+const hemi = r => new THREE.SphereGeometry(r, 64, 28, 0, Math.PI * 2, 0, Math.PI / 2);
+const circle = (r, n = 160) => { const p = []; for (let i = 0; i <= n; i++) { const a = i / n * Math.PI * 2; p.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r)); } return new THREE.BufferGeometry().setFromPoints(p); };
+const label = (html, cls, cy = .5) => { const el = document.createElement("div"); el.className = cls; el.innerHTML = html; const o = new CSS2DObject(el); o.center.set(.5, cy); o.el = el; return o; };
+
+const world = new THREE.Group(); scene.add(world);
+const grid = new THREE.GridHelper(90, 90, C.grid, C.grid);
+grid.material.transparent = true; grid.material.opacity = .32; grid.material.depthWrite = false; grid.position.y = -.01;
+world.add(grid);
+const floor = new THREE.Mesh(new THREE.CircleGeometry(DOME + .3, 96), basic(0xffffff, { map: FLOOR, blending: THREE.AdditiveBlending, opacity: 0 }));
+floor.rotation.x = -Math.PI / 2; world.add(floor);
+const rings = [];
+[-50, -60, -70, -80, -90].forEach(v => {
+  const l = new THREE.Line(circle(R(v)), new THREE.LineBasicMaterial({ color: C.c5, transparent: true, opacity: 0, depthWrite: false }));
+  l.position.y = .01; l.userData.o = v === -90 ? .55 : .2; world.add(l); rings.push(l);
+  const lb = label(`${v} dBm`, "rlb"); lb.position.copy(at(R(v) + .05, 90, 0)); world.add(lb);
+});
+const spokes = []; for (let a = 0; a < 360; a += 30) spokes.push(at(1.6, a, .01), at(DOME, a, .01));
+const spokeL = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(spokes), new THREE.LineBasicMaterial({ color: C.c5, transparent: true, opacity: 0, depthWrite: false }));
+spokeL.userData.o = .1; world.add(spokeL); rings.push(spokeL);
+const ticks = []; for (let a = 0; a < 360; a += 3) { const l = a % 30 === 0 ? .5 : .22; ticks.push(at(DOME, a, .01), at(DOME + l, a, .01)); }
+const tickL = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(ticks), new THREE.LineBasicMaterial({ color: C.c5, transparent: true, opacity: 0, depthWrite: false }));
+tickL.userData.o = .5; world.add(tickL); rings.push(tickL);
+
+const sweepG = new THREE.Group(); world.add(sweepG);
+const sweep = new THREE.Mesh(new THREE.PlaneGeometry(DOME * 2, DOME * 2), basic(0xffffff, { map: SWEEP, blending: THREE.AdditiveBlending, opacity: 0, side: THREE.DoubleSide }));
+sweep.rotation.x = -Math.PI / 2; sweep.position.y = .02; sweepG.add(sweep);
+
+const dome = new THREE.Mesh(hemi(DOME), domeMat(C.c5, .38, 1));
+dome.material.uniforms.uH.value = DOME; world.add(dome);
+
+const CORE = new THREE.Vector3(0, 1.8, 0);
+const core = new THREE.Group(); core.position.copy(CORE); world.add(core);
+const coreBall = add(core, new THREE.Mesh(new THREE.SphereGeometry(.4, 32, 16), new THREE.MeshBasicMaterial({ color: new THREE.Color(.5, 1.7, 2.0) })));
+const ico = add(core, new THREE.Mesh(new THREE.IcosahedronGeometry(.85, 1), basic(C.c5, { wireframe: true, opacity: .55 })));
+const tor1 = add(core, new THREE.Mesh(new THREE.TorusGeometry(1.3, .014, 6, 160), basic(C.c5, { opacity: .85 })));
+const tor2 = add(core, new THREE.Mesh(new THREE.TorusGeometry(1.55, .01, 6, 160), basic(C.c5, { opacity: .5 })));
+const cHalo = add(core, new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: C.c5, transparent: true, opacity: .45, blending: THREE.AdditiveBlending, depthWrite: false })));
+cHalo.scale.setScalar(3.2);
+const beam = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, CORE.y, 8, 1, true), basic(C.c5, { opacity: .55, blending: THREE.AdditiveBlending }));
+beam.position.y = CORE.y / 2; world.add(beam);
+[[.95, 1.0, .7], [1.4, 1.42, .35]].forEach(([a, b, o]) => { const m = new THREE.Mesh(new THREE.RingGeometry(a, b, 96), basic(C.c5, { opacity: o, side: THREE.DoubleSide })); m.rotation.x = -Math.PI / 2; m.position.y = .015; world.add(m); });
+const pulses = [0, 1].map(() => { const m = new THREE.Mesh(new THREE.RingGeometry(.96, 1, 96), basic(C.c5, { opacity: 0, side: THREE.DoubleSide, blending: THREE.AdditiveBlending })); m.rotation.x = -Math.PI / 2; m.position.y = .02; world.add(m); return m; });
+const coreName = (N.router.model || N.router.name || "ROUTER").replace(/^TP-Link /i, "");
+const coreLbl = label(`<b>${W.esc(coreName.toUpperCase())}</b><span>${W.esc(N.router.lanIp || "")}</span>`, "clb", 1);
+coreLbl.position.set(0, CORE.y + 1.85, 0); world.add(coreLbl);
+
+const layer = d => d.band === "2g" ? "2g" : d.band === "5g" || d.band === "6g" ? "5g" : "na";
+const groups = ["2g", "na", "5g"].map(k => W.online.filter(d => layer(d) === k)).filter(g => g.length);
+{
+  const A0 = -20, A1 = 200, GAP = 14;
+  const weight = groups.map(g => g.length + 1), total = weight.reduce((a, b) => a + b, 0);
+  const usable = (A1 - A0) - GAP * (groups.length - 1);
+  let a = A0;
+  groups.forEach((g, i) => {
+    const w = usable * weight[i] / total, pad = w / (g.length + 1) / 2;
+    spread(g.length, a + pad, a + w - pad).forEach((ang, j) => { g[j].a = ang; g[j].j = j; });
+    a += w + GAP;
+  });
+}
+const radius = d => d.signal != null ? R(d.signal) : d.rate ? R(Math.round(-88 + Math.min(d.rate, 867) / 867 * 38)) : R(-64) + (d.j % 2 ? 1.1 : -.6);
+const height = d => d.band === "wired" ? .6 : layer(d) === "5g" ? 2.7 : layer(d) === "2g" ? 1.15 : 1.9;
+const devs = W.online.map(d => {
+  const col = devCol(d), y = height(d), p = at(radius(d), d.a, y);
+  const g = new THREE.Group(); g.position.copy(p); world.add(g);
+  const body = new THREE.Group(); g.add(body);
+  const gem = add(body, new THREE.Mesh(new THREE.OctahedronGeometry(.26), new THREE.MeshBasicMaterial({ color: col.clone().multiplyScalar(1.6), transparent: true })));
+  const wire = add(body, new THREE.Mesh(new THREE.OctahedronGeometry(.44), basic(col, { wireframe: true, opacity: .4 })));
+  const halo = add(body, new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW, color: col, transparent: true, opacity: .6, blending: THREE.AdditiveBlending, depthWrite: false })));
+  halo.scale.setScalar(1.6);
+  let ring = null;
+  if (d.me) { ring = add(body, new THREE.Mesh(new THREE.TorusGeometry(.66, .012, 6, 80), basic(col, { opacity: .9 }))); ring.rotation.x = Math.PI / 2; }
+  const hit = add(g, new THREE.Mesh(new THREE.SphereGeometry(.7, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })));
+  hit.userData.id = d.id;
+  const drop = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -.3, 0), new THREE.Vector3(0, -y, 0)]), new THREE.LineDashedMaterial({ color: col, dashSize: .1, gapSize: .09, transparent: true, opacity: 0, depthWrite: false }));
+  drop.computeLineDistances(); g.add(drop);
+  const mk = new THREE.Mesh(new THREE.RingGeometry(.15, .2, 32), basic(col, { opacity: 0, side: THREE.DoubleSide }));
+  mk.rotation.x = -Math.PI / 2; mk.position.y = -y + .02; g.add(mk);
+  const t = W.tone(d);
+  const meta = [d.signal != null ? `<em class="${t === "warn" ? "w" : ""}">${W.minus(d.signal)} dBm</em>` : null, d.rate ? `${d.rate} Mbps` : null].filter(Boolean).join(" · ") || W.esc(d.band === "wired" ? "cable" : d.ip || "");
+  const lab = label(`<div class="lb b${d.band || "na"} t-${t}" data-id="${d.id}"><b>${W.pv(d.label, d.masked)}</b><span>${meta}</span></div>`, "lw");
+  g.add(lab);
+  body.scale.setScalar(0.001);
+  return { d, g, body, gem, wire, halo, ring, hit, drop, mk, lab, el: lab.el.firstElementChild, col, p, shown: false, spin: (d.a || 0) * .11 };
+});
+
+const lpos = [], lcol = [];
+devs.forEach(v => { lpos.push(CORE.x, CORE.y, CORE.z, v.p.x, v.p.y, v.p.z); lcol.push(v.col.r, v.col.g, v.col.b, v.col.r * .4, v.col.g * .4, v.col.b * .4); });
+const lg = new THREE.BufferGeometry();
+lg.setAttribute("position", new THREE.Float32BufferAttribute(lpos, 3));
+lg.setAttribute("color", new THREE.Float32BufferAttribute(lcol, 3));
+const links = new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+world.add(links);
+const PER = 4, pp = new Float32Array(Math.max(1, devs.length) * PER * 3), pc = new Float32Array(Math.max(1, devs.length) * PER * 3);
+devs.forEach((v, i) => { for (let k = 0; k < PER; k++) { const j = (i * PER + k) * 3; pc[j] = v.col.r * 1.8; pc[j + 1] = v.col.g * 1.8; pc[j + 2] = v.col.b * 1.8; } });
+const pg = new THREE.BufferGeometry();
+pg.setAttribute("position", new THREE.BufferAttribute(pp, 3));
+pg.setAttribute("color", new THREE.BufferAttribute(pc, 3));
+const parts = new THREE.Points(pg, new THREE.PointsMaterial({ size: .22, map: GLOW, vertexColors: true, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+world.add(parts);
+
+const MAXD = 26;
+const drawn = [...N.neighbors].sort((a, b) => (b.hit - a.hit) || (b.signal - a.signal)).slice(0, MAXD);
+const nb2 = drawn.filter(n => n.band === "2g").sort((a, b) => a.channel - b.channel || b.signal - a.signal);
+const nb5 = drawn.filter(n => n.band !== "2g").sort((a, b) => a.channel - b.channel || b.signal - a.signal);
+{
+  const B0 = -172, B1 = -22, GAP = nb2.length && nb5.length ? 12 : 0;
+  const usable = B1 - B0 - GAP, n = nb2.length + nb5.length || 1;
+  const w5 = nb5.length ? Math.max(Math.min(18, usable), usable * nb5.length / n) : 0;
+  const s5 = nb5.length ? w5 / (nb5.length + 1) / 2 : 0, w2 = usable - w5, s2 = nb2.length ? w2 / (nb2.length + 1) / 2 : 0;
+  spread(nb5.length, B0 + s5, B0 + w5 - s5).forEach((a, i) => nb5[i].a3 = a);
+  spread(nb2.length, B0 + w5 + GAP + s2, B1 - s2).forEach((a, i) => nb2[i].a3 = a);
+}
+const tier = n => !n.hit ? "none" : n.level;
+const TIER = {
+  strong: { col: C.bad, o: .55, scan: .5, ring: .5, push: .25 },
+  audible: { col: C.warn, o: .42, scan: .3, ring: .4, push: .45 },
+  faint: { col: C.faint, o: .2, scan: 0, ring: .22, push: .8 },
+  none: { col: C.grey, o: .3, scan: 0, ring: .25, push: null }
+};
+const nbs = [...nb2, ...nb5].map((n, i) => {
+  const k = tier(n), T = TIER[k];
+  const rr = 1.2 + (Math.max(-95, n.signal) + 95) * .062, dist = T.push != null ? DOME + rr * T.push : DOME + rr + 1.6;
+  const g = new THREE.Group(); g.position.copy(at(dist, n.a3, 0)); world.add(g);
+  const dm = new THREE.Mesh(hemi(rr), domeMat(T.col, T.o, T.scan));
+  dm.material.uniforms.uH.value = rr; dm.material.uniforms.uT.value = i * .37; g.add(dm);
+  const fr = new THREE.Mesh(new THREE.RingGeometry(rr - .03, rr, 72), basic(T.col, { opacity: 0, side: THREE.DoubleSide }));
+  fr.rotation.x = -Math.PI / 2; fr.position.y = .01; fr.userData.o = T.ring; g.add(fr);
+  const gem = new THREE.Mesh(new THREE.OctahedronGeometry(.14), new THREE.MeshBasicMaterial({ color: T.col.clone().multiplyScalar(1.4), transparent: true, opacity: 0 }));
+  gem.position.y = .5; g.add(gem);
+  const lb = label(`CH${n.channel}`, "nlb" + (n.hit ? " " + n.level : ""), 1);
+  lb.position.set(0, rr + .25, 0); g.add(lb);
+  return { n, k, g, dm, fr, gem, lb, shown: false };
+});
+const groupLbls = ["2g", "5g"].map(b => {
+  const it = N.interference[b];
+  if (!it || !it.overlap) return null;
+  const tail = it.level === "low" ? "<span>too faint to matter</span>" : it.loud ? `<span>${it.loud} of them loud</span>` : "";
+  const lb = label(`${it.overlap} OVERLAP YOUR ${W.BL[b].toUpperCase()}${tail}`, "glb g-" + it.level, 1);
+  world.add(lb);
+  return lb;
+}).filter(Boolean);
+groupLbls.forEach((lb, i) => lb.position.set(0, groupLbls.length > 1 ? 8.3 - i * 1.4 : 7.8, 0));
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), .62, .42, .22);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+function resize() {
+  const w = innerWidth, h = innerHeight, m = $("#map").getBoundingClientRect();
+  const sx = Math.round((m.left + m.width / 2) - w / 2), sy = Math.round((m.top + m.height / 2) - h / 2);
+  const fw = w + 2 * Math.abs(sx), fh = h + 2 * Math.abs(sy);
+  camera.aspect = fw / fh;
+  camera.setViewOffset(fw, fh, Math.abs(sx) - sx, Math.abs(sy) - sy, w, h);
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h); composer.setSize(w, h); lr.setSize(w, h);
+  bloom.resolution.set(w, h);
+}
+resize();
+addEventListener("resize", resize);
+
+let focus = null, introDone = false;
+W.focus3d = id => {
+  focus = id ? devs.find(x => x.d.id === id) || null : null;
+  devs.forEach(x => x.el.classList.toggle("dim", !!focus && x !== focus));
+  controls.autoRotate = introDone && !focus;
+};
+devs.forEach(v => v.el.addEventListener("click", e => { e.stopPropagation(); W.select(v.d.id); }));
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+const pick = e => { ptr.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ptr, camera); const h = ray.intersectObjects(devs.map(v => v.hit))[0]; return h ? h.object.userData.id : null; };
+let down = null;
+renderer.domElement.addEventListener("pointerdown", e => { down = [e.clientX, e.clientY]; });
+renderer.domElement.addEventListener("pointerup", e => { if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 5) return; const id = pick(e); id ? W.select(id) : W.clear(); });
+renderer.domElement.addEventListener("pointermove", e => { if (e.buttons) return; renderer.domElement.style.cursor = pick(e) ? "pointer" : "grab"; });
+
+const ctr = { dev: 0, nb: 0 };
+const extra = N.neighbors.length - nbs.length;
+let t0 = Infinity, intShown = false;
+const clock = new THREE.Clock();
+const tmp = new THREE.Vector3(), aim = new THREE.Vector3();
+function frame() {
+  const t = clock.getElapsedTime(), e = t - t0;
+  const k = W.SKIP ? 1 : clamp(e / 3.4);
+  if (!introDone) {
+    camera.position.lerpVectors(START, HOME, easeIO(k));
+    if (k >= 1 && isFinite(t0)) { introDone = true; controls.enabled = true; controls.autoRotate = !focus; }
+  }
+  const show = W.SKIP ? 1 : easeO(clamp((e - .2) / 1.4));
+  floor.material.opacity = show;
+  rings.forEach(r => r.material.opacity = r.userData.o * show);
+  dome.material.uniforms.uO.value = .38 * (W.SKIP ? 1 : easeO(clamp((e - .5) / 1.6)));
+  dome.material.uniforms.uT.value = t;
+  sweep.material.opacity = .7 * show;
+  sweepG.rotation.y = -t * .9;
+  coreLbl.el.classList.toggle("on", show > .6);
+  core.scale.setScalar(W.SKIP ? 1 : back(clamp(e / .9)) || .001);
+  ico.rotation.y = t * .35; ico.rotation.x = t * .18;
+  tor1.rotation.set(Math.PI / 2 + Math.sin(t * .4) * .25, t * .5, 0);
+  tor2.rotation.set(Math.PI / 2.4, -t * .3, Math.cos(t * .3) * .3);
+  coreBall.scale.setScalar(1 + Math.sin(t * 2.4) * .06);
+  pulses.forEach((p, i) => { const q = ((t * .38) + i * .5) % 1; p.scale.setScalar(1 + q * (DOME - 1)); p.material.opacity = (1 - q) * .45 * show; });
+
+  let changed = false;
+  devs.forEach((v, i) => {
+    const q = W.SKIP ? 1 : clamp((e - 1.0 - i * .14) / .6);
+    if (q > 0 && !v.shown) { v.shown = true; ctr.dev++; changed = true; }
+    const s = q >= 1 ? 1 : back(q);
+    v.body.scale.setScalar(Math.max(.001, s * (focus === v ? 1.5 : 1)));
+    v.gem.rotation.y = t * 1.2 + v.spin; v.wire.rotation.y = -t * .6; v.wire.rotation.x = t * .3;
+    v.gem.position.y = v.wire.position.y = Math.sin(t * 1.3 + v.spin) * .06;
+    if (v.ring) v.ring.rotation.z = t;
+    v.drop.material.opacity = .45 * q; v.mk.material.opacity = .65 * q;
+    v.el.classList.toggle("on", q > .5);
+    const dim = focus && focus !== v ? .25 : 1;
+    v.gem.material.opacity = dim; v.halo.material.opacity = .6 * dim;
+  });
+  const lk = W.SKIP ? 1 : easeO(clamp((e - 2.6) / 1));
+  links.material.opacity = .55 * lk; parts.material.opacity = devs.length ? lk : 0;
+  devs.forEach((v, i) => {
+    const sp = .12 + (v.d.rate || 300) / 900;
+    for (let k2 = 0; k2 < PER; k2++) { const f = (t * sp + k2 / PER) % 1, j = (i * PER + k2) * 3; tmp.lerpVectors(CORE, v.p, f); pp[j] = tmp.x; pp[j + 1] = tmp.y; pp[j + 2] = tmp.z; }
+  });
+  pg.attributes.position.needsUpdate = true;
+
+  nbs.forEach((v, i) => {
+    const q = W.SKIP ? 1 : easeO(clamp((e - 1.9 - i * .07) / .8));
+    if (q > 0 && !v.shown) { v.shown = true; ctr.nb++; changed = true; }
+    v.dm.material.uniforms.uO.value = v.dm.material.userData.o * q * (v.k === "strong" ? .85 + Math.sin(t * 2 + i) * .15 : 1);
+    v.dm.material.uniforms.uT.value = t + i * .37;
+    v.fr.material.opacity = v.fr.userData.o * q;
+    v.gem.material.opacity = q; v.gem.rotation.y = t + i;
+    v.lb.el.classList.toggle("on", q > .6);
+  });
+  if (changed) W.paint(ctr.dev, ctr.nb + (ctr.nb === nbs.length ? extra : 0));
+  const late = W.SKIP || e > 3.2;
+  groupLbls.forEach(l => l.el.classList.toggle("on", late));
+  if (late && !intShown) { intShown = true; W.showInt(); W.paint(devs.length, N.neighbors.length); }
+
+  aim.copy(focus ? focus.g.position : TARGET);
+  controls.target.lerp(aim, .06);
+  if (introDone) controls.update(); else camera.lookAt(controls.target);
+  composer.render();
+  lr.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+W.whenStarted(() => { t0 = clock.getElapsedTime(); });
+</script>
+</body>
+</html>

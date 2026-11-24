@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "scannedAt": "2026-11-23T21:42:00+05:30",
+ "platform": "macOS 27.2",
+ "self": "This Mac",
+ "host": {"ip": "192.168.0.101", "mask": "255.255.255.0", "gateway": "192.168.0.1", "iface": "en0"},
+ "gateway": {"ip": "192.168.0.1", "mac": "50:C7:BF:10:20:30", "vendor": "TP-Link", "brand": "TP-Link"},
+ "link": {"ssid": "HOME-NET", "band": "5g", "channel": 36, "width": 80, "signal": -67, "noise": -92, "rate": 286, "mcs": 7, "phy": "802.11ac", "streams": 2, "security": "WPA2/WPA3"},
+ "networks": [
+  {"ssid": "HOME-NET", "band": "2g", "channel": 6, "width": 40, "signal": -59, "phy": "802.11b/g/n", "security": "WPA2-Personal"},
+  {"ssid": "JioFiber-4G7k", "band": "2g", "channel": 6, "width": 20, "signal": -62, "phy": "802.11b/g/n/ax", "security": "WPA2-Personal"},
+  {"ssid": "Flat-302", "band": "2g", "channel": 6, "width": 20, "signal": -66, "phy": "802.11b/g/n", "security": "WPA2-Personal"},
+  {"ssid": "Excitel_Home", "band": "2g", "channel": 6, "width": 20, "signal": -70, "phy": "802.11b/g/n", "security": "WPA2-Personal"},
+  {"ssid": "ACT-ai_1029", "band": "2g", "channel": 6, "width": 20, "signal": -73, "phy": "802.11b/g/n", "security": "WPA2-Personal"},
+  {"ssid": "JioFiber-Qx2", "band": "2g", "channel": 6, "width": 20, "signal": -75, "phy": "802.11b/g/n/ax", "security": "WPA2-Personal"},
+  {"ssid": "DIRECT-HP-Print", "band": "2g", "channel": 6, "width": 20, "signal": -80, "phy": "802.11g/n", "security": "WPA2-Personal"},
+  {"ssid": "Galaxy A54", "band": "2g", "channel": 6, "width": 20, "signal": -82, "phy": "802.11b/g/n", "security": "WPA2-Personal"},
+  {"ssid": "Airtel_Zerotouch", "band": "2g", "channel": 1, "width": 20, "signal": -79, "phy": "802.11b/g/n/ax", "security": "WPA2-Personal"},
+  {"ssid": "TP-Link_8A21", "band": "2g", "channel": 1, "width": 20, "signal": -86, "phy": "802.11b/g/n", "security": "WPA2-Personal"},
+  {"ssid": "Netplus_Guest", "band": "2g", "channel": 3, "width": 20, "signal": -83, "phy": "802.11b/g/n", "security": "Open"},
+  {"ssid": "Mi_Router_4C", "band": "2g", "channel": 9, "width": 20, "signal": -78, "phy": "802.11b/g/n", "security": "WPA2-Personal"},
+  {"ssid": "BSNL_FTTH", "band": "2g", "channel": 11, "width": 20, "signal": -74, "phy": "802.11b/g/n", "security": "WPA2-Personal"},
+  {"ssid": "Tenda_51C0", "band": "2g", "channel": 11, "width": 20, "signal": -85, "phy": "802.11b/g/n", "security": "WPA2-Personal"},
+  {"ssid": "JioFiber-4G7k_5G", "band": "5g", "channel": 36, "width": 80, "signal": -71, "phy": "802.11a/n/ac/ax", "security": "WPA2-Personal"},
+  {"ssid": "Flat-302_5G", "band": "5g", "channel": 44, "width": 40, "signal": -76, "phy": "802.11a/n/ac", "security": "WPA2-Personal"},
+  {"ssid": "Airtel_Zerotouch_5G", "band": "5g", "channel": 48, "width": 20, "signal": -82, "phy": "802.11a/n/ac/ax", "security": "WPA2-Personal"},
+  {"ssid": "Excitel_5G", "band": "5g", "channel": 100, "width": 80, "signal": -83, "phy": "802.11a/n/ac", "security": "WPA2-Personal"},
+  {"ssid": "ACT-ai_1029_5G", "band": "5g", "channel": 165, "width": 20, "signal": -87, "phy": "802.11a/n/ac", "security": "WPA2-Personal"}
+ ],
+ "speed": {"down": 38.4, "up": 21.6, "idle": 9, "loaded": 214, "rpm": 280, "method": "networkQuality"},
+ "devices": [
+  {"ip": "192.168.0.101", "mac": "3C:22:FB:4A:91:0E", "name": "Home-MacBook", "vendor": "Apple", "private": false, "me": true}
+ ],
+ "notes": []
+}

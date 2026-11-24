@@ -1,0 +1,31 @@
+{
+ "model": "TP-Link Archer C6",
+ "hardware": "v3.2",
+ "firmware": "1.3.6 Build 20250412",
+ "connection": "PPPoE",
+ "wanIp": "103.21.148.77",
+ "dhcp": "192.168.0.100 – .199",
+ "dns": "ISP automatic",
+ "qos": "Off",
+ "uptime": "12d 04h",
+ "bands": [
+  {"id": "2g", "ssid": "HOME-NET", "channel": 6, "width": 40, "security": "WPA2-Personal", "mode": "802.11b/g/n", "power": "High", "enabled": true},
+  {"id": "5g", "ssid": "HOME-NET", "channel": 36, "width": 80, "security": "WPA2/WPA3", "mode": "802.11a/n/ac", "power": "High", "enabled": true}
+ ],
+ "clients": [
+  {"name": "Home-MacBook", "vendor": "Apple", "mac": "3C:22:FB:4A:91:0E", "ip": "192.168.0.101", "band": "5g", "signal": -67, "txRate": 286, "connectedFor": "2h 14m", "online": true},
+  {"name": "iPhone", "vendor": "Apple", "mac": "A6:51:0B:7E:22:19", "ip": "192.168.0.104", "band": "5g", "signal": -58, "txRate": 433, "connectedFor": "6h 02m", "online": true},
+  {"name": "OnePlus 12", "vendor": "OnePlus", "mac": "96:65:2D:7C:10:B3", "ip": "192.168.0.118", "band": "5g", "signal": -62, "txRate": 520, "connectedFor": "1d 03h", "online": true},
+  {"name": "Work-Laptop-Dell", "vendor": "Dell", "mac": "FA:B4:6A:21:5D:C9", "ip": "192.168.0.122", "band": "5g", "signal": -61, "txRate": 390, "connectedFor": "7h 40m", "online": true},
+  {"name": "iPad", "vendor": "Apple", "mac": "AA:51:AB:0F:E2:44", "ip": "192.168.0.131", "band": "5g", "signal": -72, "txRate": 175, "connectedFor": "3d 11h", "online": true},
+  {"name": "Living Room TV", "vendor": "Xiaomi", "mac": "66:CE:6E:3A:8B:21", "ip": "192.168.0.112", "band": "2g", "signal": -71, "txRate": 72, "connectedFor": "12d 04h", "online": true},
+  {"name": "Redmi Note 13", "vendor": "Xiaomi", "mac": "D6:38:9C:62:F0:17", "ip": "192.168.0.109", "band": "2g", "signal": -64, "txRate": 72, "connectedFor": "5h 21m", "online": true},
+  {"name": "Echo Dot", "vendor": "Amazon", "mac": "0A:A6:BC:93:4E:5A", "ip": "192.168.0.115", "band": "2g", "signal": -55, "txRate": 65, "connectedFor": "12d 04h", "online": true},
+  {"name": "Hall bulb", "vendor": "Tuya", "mac": "DA:1F:12:6B:A0:3C", "ip": "192.168.0.141", "band": "2g", "signal": -74, "txRate": 24, "connectedFor": "12d 04h", "online": true},
+  {"name": "Bedroom bulb", "vendor": "Tuya", "mac": "DA:1F:12:6B:A1:07", "ip": "192.168.0.142", "band": "2g", "signal": -80, "txRate": 11, "connectedFor": "9d 22h", "online": true},
+  {"name": "HP Ink Tank", "vendor": "HP", "mac": "6E:02:E0:55:19:8D", "ip": "192.168.0.150", "band": "2g", "signal": -77, "txRate": 39, "connectedFor": "4d 06h", "online": true},
+  {"name": null, "mac": "5E:9A:14:C3:70:B2", "ip": "192.168.0.163", "band": "2g", "signal": -84, "txRate": 6, "connectedFor": "38 min", "online": true},
+  {"name": "Galaxy Tab", "vendor": "Samsung", "mac": "B2:17:4C:90:AA:05", "ip": "192.168.0.127", "online": false},
+  {"name": "Guest-iPhone", "vendor": "Apple", "mac": "DE:44:21:6F:03:8C", "ip": "192.168.0.133", "online": false}
+ ]
+}

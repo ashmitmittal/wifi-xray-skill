@@ -1,0 +1,6 @@
+wifi-xray-workspace/
+wifi-xray-report/
+wifi-xray-demo/
+.DS_Store
+__pycache__/
+*.pyc
