@@ -16,7 +16,7 @@ If they would rather paste the text into the chat, or send a screenshot, that wo
 
 | Router | Usual address | Where to click after logging in |
 | --- | --- | --- |
-| TP-Link Archer | 192.168.0.1 | **Clients**, on the first page (Network Map). Tested on an Archer C6 v4. |
+| TP-Link Archer | 192.168.0.1 | **Clients**, on the first page (Network Map). Tested on an Archer C6. |
 | TP-Link (older green pages) | 192.168.0.1 | DHCP → **DHCP Clients List**, or Wireless → **Wireless Statistics** |
 | Jio (JioFiber, AirFiber) | 192.168.29.1 | **Network** → LAN clients, or the device list on the home page |
 | Airtel | 192.168.1.1 | **Connected devices**, or Status → LAN / WLAN clients |

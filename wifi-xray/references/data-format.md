@@ -63,8 +63,8 @@ What the router's own admin page says. Everything is optional.
 ```json
 {
   "model": "TP-Link Archer C6",
-  "hardware": "v4.0",
-  "firmware": "1.12.10 Build 230208",
+  "hardware": "v3.2",
+  "firmware": "1.3.6 Build 20250412",
   "connection": "PPPoE",
   "wanIp": "100.64.0.10",
   "dhcp": "192.168.0.100 – .249",
