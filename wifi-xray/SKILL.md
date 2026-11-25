@@ -116,7 +116,7 @@ This reads what they copied, saves it as `router-page.txt` and writes a first-pa
 
 Build again with the same command as step 2. The page reloads with names. Then send a short update and stop:
 
-> **Updated.** 4 devices online and 6 more your router remembers, now with names. Tick the ones you know in the list on the left; anything left unticked is worth a second look.
+> **Updated.** 4 devices online and 6 more your router remembers, now with names. Tick the ones you know in the list on the left; anything left unticked turns red and is worth a second look.
 >
 > Press **P** on the page to hide names before you share or record it.
 

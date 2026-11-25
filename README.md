@@ -12,7 +12,7 @@ It answers two questions first:
 ## What the page has
 
 - A 3D hologram of the network: devices on a 5 GHz layer and a 2.4 GHz layer, neighbours as red, amber, faint or grey domes
-- The device list with name, band and link speed, and a tick box for "I know this one"
+- The device list with name, band and link speed, and a tick box for "I know this one". Once you start ticking, your devices turn green in the hologram and anything left unticked turns red with a "?"
 - A channel spectrum for 2.4 GHz and 5 GHz, with the clearer channel marked when there is one
 - Measured download and upload speed, and ping when the line is idle and when it is busy
 - Your router's channel and width on each band, as seen from the air
